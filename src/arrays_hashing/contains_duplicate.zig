@@ -8,14 +8,12 @@ pub fn contains_duplicate(nums: []const i32) !bool {
 
     var map = std.AutoHashMap(i32, i32).init(allocator);
     defer map.deinit();
-    var result: bool = false;
+
     var i: u32 = 0;
-    var duplicate: i32 = 0;
+
     for (nums) |value| {
         if (map.contains(value)) {
-            result = true;
-            duplicate = value;
-            // return true;
+            return true;
         }
         map.put(value, 1) catch |err| {
             std.debug.print("\nError occured:\n{any}\n", .{err});
@@ -23,19 +21,7 @@ pub fn contains_duplicate(nums: []const i32) !bool {
         i += 1;
     }
 
-    var iterator = map.iterator();
-
-    std.debug.print("\n======================================================", .{});
-    while (iterator.next()) |kv| {
-        std.debug.print("\n||     ---------------          ---------------     ||", .{});
-        std.debug.print("\n||          |{any}|                       |{any}|           ||", .{ kv.key_ptr.*, kv.value_ptr.* });
-        std.debug.print("\n||     ---------------          ---------------     ||", .{});
-    }
-    std.debug.print("\n======================================================\n", .{});
-
-    // return false;
-    std.debug.print("The first duplicate value is: {}", .{duplicate});
-    return result;
+    return false;
 }
 
 test "simple_test" {
