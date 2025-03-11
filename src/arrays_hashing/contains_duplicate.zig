@@ -1,7 +1,7 @@
 const std = @import("std");
 const expect = std.testing.expect;
 
-pub fn contains_duplicate(nums: []const i32) !bool {
+pub fn contains_duplicate(nums: []const i32) bool {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
     // defer gpa.deinit();
@@ -27,10 +27,7 @@ pub fn contains_duplicate(nums: []const i32) !bool {
 test "simple_test" {
     const values = [_]i32{ 1, 2, 3, 1 };
     std.debug.print("values: {any}\n", .{values});
-    const result = contains_duplicate(values[0..]) catch |err| {
-        std.debug.print("Error occurred: {}\n", .{err});
-        return;
-    };
+    const result = contains_duplicate(values[0..]);
     std.debug.print("\nresult: {any}\n", .{result});
     try expect(result == true);
 }
