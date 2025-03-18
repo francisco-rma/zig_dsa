@@ -33,17 +33,21 @@ pub fn two_sum(nums: []const u8, target: u8) [2]u8 {
     return result;
 }
 
-test "simple_test" {
-    const sample_values = [_]u8{ 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    const sample_target: u8 = 9;
-
-    const sample_result = [2]u8{ 3, 4 };
-
-    const result = two_sum(&sample_values, sample_target);
+pub fn case(values: []const u8, target: u8, result: []const u8) bool {
+    const test_result = two_sum(values, target);
     std.debug.print("Result is: {any}\n", .{result});
 
-    const test_result: bool = ((sample_result[0] == result[0]) and (sample_result[1] == result[1]));
+    return ((result[0] == test_result[0]) and (result[1] == test_result[1]));
+}
 
-    std.debug.print("Test result is: {any}\n", .{test_result});
-    try expect(test_result == true);
+test "simple_test" {
+    const sample_values = [_]u8{ 3, 3 };
+    const sample_target: u8 = 6;
+
+    const sample_result = [2]u8{ 0, 1 };
+
+    const validity: bool = case(&sample_values, sample_target, &sample_result);
+    std.debug.print("Test result is: {any}\n", .{validity});
+
+    try expect(validity == true);
 }
