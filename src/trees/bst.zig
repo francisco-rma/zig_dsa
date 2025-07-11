@@ -1,27 +1,34 @@
 const std = @import("std");
-const arrays_hashing_module = @import("arrays_hashing/index.zig");
-const trees = @import("trees/index.zig");
-const BSTNode = trees.bst.BSTNode;
+pub const BSTNode = struct {
+    val: i32,
+    left: ?*BSTNode,
+    right: ?*BSTNode,
+    pub fn contains(self: *BSTNode, target: i32) bool {
+        var result: bool = false;
+        var node: ?*BSTNode = self;
 
-pub fn main() !void {
-    std.debug.print("MAIN FUNCTION", .{});
-    try arrays_hashing();
-}
+        while (node) |n| {
+            if (target == n.val) {
+                result = true;
+                break;
+            } else if (target < n.val) {
+                node = n.left;
+            } else if (target > n.val) {
+                node = n.right;
+            }
+        }
 
-pub fn arrays_hashing() !void {
-    std.debug.print("\nRunning problem:\n{s}", .{"Array-Hashing/two sum"});
+        return result;
+    }
+};
 
-    const values = [_]u8{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-    const result = arrays_hashing_module.two_sum.two_sum(values[0..], 8);
+pub fn from_list() ?*BSTNode {}
 
-    std.debug.print("\nThe result is:\n{any}\n", .{&result});
-}
-
-test "bst" {
+test "manual binary tree up to 3 levels" {
     const allocator = std.heap.page_allocator;
 
     const root = try allocator.create(BSTNode);
-    root.* = .{
+    root.* = BSTNode{
         .val = 10,
         .left = null,
         .right = null,
@@ -52,10 +59,4 @@ test "bst" {
     try std.testing.expect(root.contains(7)); // left-right
     try std.testing.expect(root.contains(20)); // right-right
     try std.testing.expect(!root.contains(99)); // not in tree
-}
-test "simple test" {
-    var list = std.ArrayList(i32).init(std.testing.allocator);
-    defer list.deinit(); // Try commenting this out and see if zig detects the memory leak!
-    try list.append(42);
-    try std.testing.expectEqual(@as(i32, 42), list.pop());
 }
