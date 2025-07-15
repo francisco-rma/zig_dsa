@@ -22,9 +22,90 @@ pub const BSTNode = struct {
     }
 };
 
-pub fn from_list() ?*BSTNode {}
+pub fn from_list(values: []const i32) ?*BSTNode {
+    const allocator = std.heap.page_allocator;
+    if (values.len == 0) return null;
 
-test "manual binary tree up to 3 levels" {
+    // Create the root node
+    const root = allocator.create(BSTNode) catch |err| {
+        std.debug.print("Error allocating memory for root node: {any}\n", .{err});
+        return null;
+    };
+    root.* = BSTNode{
+        .val = values[0],
+        .left = null,
+        .right = null,
+    };
+
+    // Insert remaining values into the tree
+    for (values[1..]) |value| {
+        _ = insert(root, value);
+    }
+
+    return root;
+}
+
+pub fn insert(root: *BSTNode, value: i32) struct { inserted: bool, node: ?*BSTNode } {
+    std.debug.print("root {any}\n", .{root});
+    var result_left = false;
+    var result_right = false;
+    if (value == root.val) {}
+
+    if (value < root.val) {
+        std.debug.print("value: {any} < root.val: {any}  \n", .{ value, root.val });
+        std.debug.print("root.left: {any}\n", .{root.left});
+        if (root.left) |left| {
+            const result = insert(left, value);
+            result_left = result.inserted;
+            return .{ .inserted = false, .node = root };
+        } else {
+            const new_node = std.heap.page_allocator.create(BSTNode) catch |err| {
+                std.debug.print("Error allocating memory for new node: {any}\n", .{err});
+                return .{ .inserted = false, .node = null };
+            };
+            new_node.* = BSTNode{ .val = value, .left = null, .right = null };
+            root.left = new_node;
+            return .{ .inserted = true, .node = root };
+        }
+    }
+    if (value > root.val) {
+        std.debug.print("value: {any} > root.val: {any}  \n", .{ value, root.val });
+        std.debug.print("root.right: {any}\n", .{root.left});
+        if (root.right) |right| {
+            const result = insert(right, value);
+            result_right = result.inserted;
+            return .{ .inserted = false, .node = root };
+        } else {
+            const new_node = std.heap.page_allocator.create(BSTNode) catch |err| {
+                std.debug.print("Error allocating memory for new node: {any}\n", .{err});
+                return .{ .inserted = false, .node = null };
+            };
+            new_node.* = BSTNode{ .val = value, .left = null, .right = null };
+            root.right = new_node;
+            return .{ .inserted = true, .node = root };
+        }
+    }
+    return .{ .inserted = result_right or result_right, .node = root };
+}
+
+fn _recursive_insert() ?*BSTNode {}
+
+test "test_from list" {
+    const allocator = std.heap.page_allocator;
+    const values = &[_]i32{ 10, 5, 15, 3, 7, 20 };
+
+    const root = try from_list(values);
+    defer allocator.destroy(root);
+
+    try std.testing.expect(root.contains(10)); // root
+    try std.testing.expect(root.contains(5)); // left child
+    try std.testing.expect(root.contains(15)); // right child
+    try std.testing.expect(root.contains(3)); // left-left child
+    try std.testing.expect(root.contains(7)); // left-right child
+    try std.testing.expect(root.contains(20)); // right-right child
+    try std.testing.expect(!root.contains(99)); // not in tree
+}
+test "test_manual" {
     const allocator = std.heap.page_allocator;
 
     const root = try allocator.create(BSTNode);

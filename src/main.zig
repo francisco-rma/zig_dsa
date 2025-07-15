@@ -1,13 +1,58 @@
 const std = @import("std");
+const assert = std.debug.assert;
 const arrays_hashing_module = @import("arrays_hashing/index.zig");
-const trees = @import("trees/index.zig");
-const BSTNode = trees.bst.BSTNode;
+const trees_module = @import("trees/index.zig");
+const BSTNode = trees_module.bst.BSTNode;
 
 pub fn main() !void {
     std.debug.print("MAIN FUNCTION", .{});
     try arrays_hashing();
+    trees();
 }
 
+pub fn trees() void {
+    const allocator = std.heap.page_allocator;
+    const root = allocator.create(BSTNode) catch |err| {
+        std.debug.print("Error allocating memory for root node: {any}\n", .{err});
+        return;
+    };
+    root.* = BSTNode{
+        .val = 10,
+        .left = null,
+        .right = null,
+    };
+    std.debug.print("Created node: {any}\n", .{root});
+    const target: i32 = 0;
+    _ = trees_module.bst.insert(root, target);
+    std.debug.print("After insertion of {d}: {any}\n", .{ target, root });
+
+    const right = allocator.create(BSTNode) catch |err| {
+        std.debug.print("Error allocating memory for root node: {any}\n", .{err});
+        return;
+    };
+    right.* = BSTNode{
+        .val = 15,
+        .left = null,
+        .right = null,
+    };
+
+    const left = allocator.create(BSTNode) catch |err| {
+        std.debug.print("Error allocating memory for root node: {any}\n", .{err});
+        return;
+    };
+    left.* = BSTNode{
+        .val = 5,
+        .left = null,
+        .right = null,
+    };
+
+    root.left = left;
+    root.right = right;
+    std.debug.print("Final root node: {any}\n", .{root});
+    assert(root.contains(10));
+    assert(root.contains(5));
+    assert(root.contains(15));
+}
 pub fn arrays_hashing() !void {
     std.debug.print("\nRunning problem:\n{s}", .{"Array-Hashing/two sum"});
 
