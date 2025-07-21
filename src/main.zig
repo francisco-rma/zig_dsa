@@ -52,7 +52,20 @@ pub fn trees() void {
     assert(root.contains(10));
     assert(root.contains(5));
     assert(root.contains(15));
+
+    var new_root = allocator.create(BSTNode) catch |err| {
+        std.debug.print("Error allocating memory for root node: {any}\n", .{err});
+        return;
+    };
+    defer allocator.destroy(new_root);
+
+    new_root = trees_module.bst.test_from_list() catch |err| {
+        std.debug.print("Error in test_from_list: {any}\n", .{err});
+        return;
+    };
+    std.debug.print("New root from list: {any}\n", .{new_root});
 }
+
 pub fn arrays_hashing() !void {
     std.debug.print("\nRunning problem:\n{s}", .{"Array-Hashing/two sum"});
 

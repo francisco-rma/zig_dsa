@@ -90,6 +90,56 @@ pub fn insert(root: *BSTNode, value: i32) struct { inserted: bool, node: ?*BSTNo
 
 fn _recursive_insert() ?*BSTNode {}
 
+pub fn test_from_list() !*BSTNode {
+    const values = &[_]i32{
+        10,
+        5,
+        15,
+        3,
+        7,
+        20,
+        99,
+        1,
+        2,
+        4,
+        6,
+        8,
+        9,
+    };
+
+    const nullroot = from_list(values);
+    if (nullroot) |root| {
+        try std.testing.expect(root.contains(10));
+        try std.testing.expect(root.contains(5));
+        try std.testing.expect(root.contains(15));
+        try std.testing.expect(root.contains(3));
+        try std.testing.expect(root.contains(7));
+        try std.testing.expect(root.contains(20));
+        try std.testing.expect(root.contains(99));
+        try std.testing.expect(root.contains(10));
+        try std.testing.expect(root.contains(5));
+        try std.testing.expect(root.contains(15));
+        try std.testing.expect(root.contains(3));
+        try std.testing.expect(root.contains(7));
+        try std.testing.expect(root.contains(20));
+        try std.testing.expect(root.contains(99));
+        try std.testing.expect(root.contains(1));
+        try std.testing.expect(root.contains(2));
+        try std.testing.expect(root.contains(4));
+        try std.testing.expect(root.contains(6));
+        try std.testing.expect(root.contains(8));
+        try std.testing.expect(root.contains(9));
+        return root;
+    } else {
+        const allocator = std.heap.page_allocator;
+        const node = allocator.create(BSTNode) catch |err| {
+            std.debug.print("Error allocating memory for root node: {any}\n", .{err});
+            return err;
+        };
+        defer allocator.destroy(node);
+        return node;
+    }
+}
 test "test_from list" {
     const allocator = std.heap.page_allocator;
     const values = &[_]i32{ 10, 5, 15, 3, 7, 20 };
