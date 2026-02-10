@@ -46,14 +46,11 @@ pub fn from_list(values: []const i32) ?*BSTNode {
 }
 
 pub fn insert(root: *BSTNode, value: i32) struct { inserted: bool, node: ?*BSTNode } {
-    std.debug.print("root {any}\n", .{root});
     var result_left = false;
     var result_right = false;
     if (value == root.val) {}
 
     if (value < root.val) {
-        std.debug.print("value: {any} < root.val: {any}  \n", .{ value, root.val });
-        std.debug.print("root.left: {any}\n", .{root.left});
         if (root.left) |left| {
             const result = insert(left, value);
             result_left = result.inserted;
@@ -69,8 +66,6 @@ pub fn insert(root: *BSTNode, value: i32) struct { inserted: bool, node: ?*BSTNo
         }
     }
     if (value > root.val) {
-        std.debug.print("value: {any} > root.val: {any}  \n", .{ value, root.val });
-        std.debug.print("root.right: {any}\n", .{root.left});
         if (root.right) |right| {
             const result = insert(right, value);
             result_right = result.inserted;
@@ -91,21 +86,7 @@ pub fn insert(root: *BSTNode, value: i32) struct { inserted: bool, node: ?*BSTNo
 fn _recursive_insert() ?*BSTNode {}
 
 pub fn test_from_list() !*BSTNode {
-    const values = &[_]i32{
-        10,
-        5,
-        15,
-        3,
-        7,
-        20,
-        99,
-        1,
-        2,
-        4,
-        6,
-        8,
-        9,
-    };
+    const values = &[_]i32{ 10, 5, 15, 3, 7, 20, 99, 1, 2, 4, 6, 8, 9 };
 
     const nullroot = from_list(values);
     if (nullroot) |root| {

@@ -5,26 +5,33 @@ const trees_module = @import("trees/index.zig");
 const BSTNode = trees_module.bst.BSTNode;
 
 pub fn main() !void {
-    std.debug.print("MAIN FUNCTION", .{});
+    std.debug.print("MAIN FUNCTION\n", .{});
     try arrays_hashing();
     trees();
+    try linalg();
 }
 
+pub fn linalg() !void {
+    const matrices_module = @import("linalg/matrices.zig");
+    try matrices_module.main();
+
+    std.debug.print("\nFinished running linear algebra problem.\n", .{});
+}
 pub fn trees() void {
     const allocator = std.heap.page_allocator;
     const root = allocator.create(BSTNode) catch |err| {
         std.debug.print("Error allocating memory for root node: {any}\n", .{err});
         return;
     };
+
     root.* = BSTNode{
         .val = 10,
         .left = null,
         .right = null,
     };
-    std.debug.print("Created node: {any}\n", .{root});
+
     const target: i32 = 0;
     _ = trees_module.bst.insert(root, target);
-    std.debug.print("After insertion of {d}: {any}\n", .{ target, root });
 
     const right = allocator.create(BSTNode) catch |err| {
         std.debug.print("Error allocating memory for root node: {any}\n", .{err});
@@ -48,7 +55,7 @@ pub fn trees() void {
 
     root.left = left;
     root.right = right;
-    std.debug.print("Final root node: {any}\n", .{root});
+
     assert(root.contains(10));
     assert(root.contains(5));
     assert(root.contains(15));
@@ -63,16 +70,11 @@ pub fn trees() void {
         std.debug.print("Error in test_from_list: {any}\n", .{err});
         return;
     };
-    std.debug.print("New root from list: {any}\n", .{new_root});
 }
 
 pub fn arrays_hashing() !void {
-    std.debug.print("\nRunning problem:\n{s}", .{"Array-Hashing/two sum"});
-
     const values = [_]u8{ 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-    const result = arrays_hashing_module.two_sum.two_sum(values[0..], 8);
-
-    std.debug.print("\nThe result is:\n{any}\n", .{&result});
+    _ = arrays_hashing_module.two_sum.two_sum(values[0..], 8);
 }
 
 test "bst" {

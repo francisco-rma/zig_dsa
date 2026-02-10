@@ -38,9 +38,11 @@ pub fn build(b: *std.Build) void {
 
     const arrays_hashing = b.addModule("arrays_hashing", .{ .root_source_file = b.path("src/arrays_hashing/index.zig") });
     const trees = b.addModule("trees", .{ .root_source_file = b.path("src/trees/index.zig") });
+    const linalg = b.addModule("linalg", .{ .root_source_file = b.path("src/linalg/index.zig") });
 
     exe.root_module.addImport("arrays_hashing", arrays_hashing);
     exe.root_module.addImport("trees", trees);
+    exe.root_module.addImport("linalg", linalg);
 
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
